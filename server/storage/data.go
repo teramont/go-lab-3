@@ -45,7 +45,7 @@ func (s *Storage) ListMachines() ([]*Machine, error) {
 	var res = make([]*Machine, 0)
 	for rows.Next() {
 		var c Machine
-		if err := rows.Scan(&c.ID, &c.Name); err != nil {
+		if err := rows.Scan(&c.ID, &c.Name, &c.Space); err != nil {
 			return nil, err
 		}
 		res = append(res, &c)
