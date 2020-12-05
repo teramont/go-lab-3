@@ -1,5 +1,8 @@
 START TRANSACTION;
 
+DROP TABLE IF EXISTS Disks;
+DROP TABLE IF EXISTS Machines;
+
 CREATE TABLE Machines (
   id  serial PRIMARY KEY,
   name  varchar(64) NOT NULL
