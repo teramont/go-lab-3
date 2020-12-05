@@ -1,0 +1,19 @@
+START TRANSACTION;
+
+TRUNCATE Disks RESTART IDENTITY CASCADE;
+TRUNCATE Machines RESTART IDENTITY CASCADE;
+
+INSERT INTO Machines (name) VALUES
+  ('server-1'),
+  ('server-2'),
+  ('cluster-1'),
+  ('cluster-2');
+
+INSERT INTO Disks (space, machineId) VALUES
+  (6597069766656, 1),
+  (15597069766656, 2),
+  (322122547200, 3),
+  (644245094400, 4),
+  (1099511627776, NULL);
+
+COMMIT;
