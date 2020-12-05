@@ -16,6 +16,11 @@ type Disk struct {
 	Space int64
 }
 
+type Connect struct {
+	DiskId      int64
+	MachineName string
+}
+
 type Storage struct {
 	Db *sql.DB
 }
@@ -48,13 +53,13 @@ func (s *Storage) ListMachines() ([]*Machine, error) {
 	return res, nil
 }
 
-func (s *Storage) Connect(name string, diskid int64) error {
-	if len(name) < 0 {
+func (s *Storage) Connect(connect Connect) error {
+	if len(connect.MachineName) < 0 {
 		return fmt.Errorf("Machine name is not provided")
 	}
 	_, err := s.Db.Exec(`
 		UPDATE disks
 		SET machineid = (SELECT id FROM machines WHERE name = $1)
-		WHERE id = $2`, name, diskid)
+		WHERE id = $2`, connect.MachineName, connect.DiskId)
 	return err
 }
