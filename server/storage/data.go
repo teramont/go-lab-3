@@ -1,4 +1,4 @@
-package machines
+package storage
 
 import (
 	"database/sql"
