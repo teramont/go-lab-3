@@ -1,32 +1,35 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
 )
 
-type Machine struct {
-	id   int32
-	name string
-}
-
 func main() {
-	sql, err := NewDbConnection()
+	server, err := Compose(8080)
 	if err != nil {
-		log.Fatalf("Cannot initialize db: %s", err)
-	}
+		log.Fatalf("Cannot initialize chat server: %s", err)
+	} else {
+		go func() {
+			log.Println("Starting chat server...")
 
-	rows, err := sql.Query("SELECT id, name FROM machines LIMIT 200")
+			err := server.Start()
+			if err == http.ErrServerClosed {
+				log.Printf("HTTP server stopped")
+			} else {
+				log.Fatalf("Cannot start HTTP server: %s", err)
+			}
+		}()
 
-	defer rows.Close()
+		// Wait for Ctrl-C signal.
+		sigChannel := make(chan os.Signal, 1)
+		signal.Notify(sigChannel, os.Interrupt)
+		<-sigChannel
 
-	if err != nil {
-		log.Fatalf("Cannot initialize db: %s", err)
-	}
-
-	for rows.Next() {
-		m := Machine{}
-		rows.Scan(&m.id, &m.name)
-		fmt.Printf("%d %s\n", m.id, m.name)
+		if err := server.Stop(); err != nil && err != http.ErrServerClosed {
+			log.Printf("Error stopping the server: %s", err)
+		}
 	}
 }
