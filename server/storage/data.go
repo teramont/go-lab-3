@@ -2,7 +2,6 @@ package storage
 
 import (
 	"database/sql"
-	"fmt"
 )
 
 type Machine struct {
@@ -54,9 +53,6 @@ func (s *Storage) ListMachines() ([]*Machine, error) {
 }
 
 func (s *Storage) Connect(connect Connect) error {
-	if len(connect.MachineName) < 0 {
-		return fmt.Errorf("Machine name is not provided")
-	}
 	_, err := s.Db.Exec(`
 		UPDATE disks
 		SET machineid = (SELECT id FROM machines WHERE name = $1)
