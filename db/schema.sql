@@ -10,7 +10,7 @@ CREATE TABLE Machines (
 
 CREATE TABLE Disks (
   id serial PRIMARY KEY,
-  space integer NOT NULL,
+  space bigint NOT NULL,
   machineId integer NULL
 );
 
