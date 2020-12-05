@@ -6,19 +6,19 @@ import (
 )
 
 type Machine struct {
-	Id    int64  `json:"id"`
+	ID    int64  `json:"id"`
 	Name  string `json:"name"`
 	Space int64  `json:"space"`
 }
 
 type Disk struct {
-	Id    int64
+	ID    int64
 	Space int64
 }
 
 type Connect struct {
-	DiskId      int64
-	MachineName string
+	DiskID      int64  `json:"diskId"`
+	MachineName string `json:"machineName"`
 }
 
 type Storage struct {
@@ -45,7 +45,7 @@ func (s *Storage) ListMachines() ([]*Machine, error) {
 	var res = make([]*Machine, 0)
 	for rows.Next() {
 		var c Machine
-		if err := rows.Scan(&c.Id, &c.Name); err != nil {
+		if err := rows.Scan(&c.ID, &c.Name); err != nil {
 			return nil, err
 		}
 		res = append(res, &c)
@@ -60,6 +60,6 @@ func (s *Storage) Connect(connect Connect) error {
 	_, err := s.Db.Exec(`
 		UPDATE disks
 		SET machineid = (SELECT id FROM machines WHERE name = $1)
-		WHERE id = $2`, connect.MachineName, connect.DiskId)
+		WHERE id = $2`, connect.MachineName, connect.DiskID)
 	return err
 }
